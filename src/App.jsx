@@ -6,13 +6,17 @@ function App() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + "/logs/")
+    fetch("/api/logs/")
       .then((res) => res.json())
-      .then((data) => setLogs(data));
-
-    fetch(import.meta.env.VITE_API_URL + "/stats/")
-      .then((res) => res.json())
-      .then((data) => setStats(data));
+      .then((data) => {
+        console.log("Fetched logs:", data);
+        setLogs(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching logs:", err);
+        setLoading(false);
+      });
   }, []);
 
   const pieData = [

@@ -1,82 +1,71 @@
-import { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import React, { useEffect, useState } from "react";
 
-function App() {
+export default function LogsTable() {
   const [logs, setLogs] = useState([]);
-  const [stats, setStats] = useState({});
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/logs/`)
+    fetch("https://web-production-a113d.up.railway.app/api/logs/")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched logs:", data);
-        setLogs(data);
-        setLoading(false);
+        console.log("Logs dari backend:", data);
+        setLogs(data); // langsung array dari backend
       })
-      .catch((err) => {
-        console.error("Error fetching logs:", err);
-        setLoading(false);
-      });
+      .catch((err) => console.error("Error fetch logs:", err));
   }, []);
-
-  const pieData = [
-    { name: "Login Fail", value: stats.login_fail || 0 },
-    { name: "Brute Force", value: stats.brute_force || 0 },
-    { name: "Port Scan", value: stats.port_scan || 0 },
-    { name: "Malware", value: stats.malware || 0 },
-  ];
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Mini SOC Dashboard</h1>
+      <h2 className="text-2xl font-bold mb-4">Security Logs</h2>
 
-      {/* Chart Section */}
-      <div className="mb-6 flex justify-center">
-        <PieChart width={350} height={350}>
-          <Pie
-            data={pieData}
-            dataKey="value"
-            outerRadius={120}
-            fill="#8884d8"
-            label
-          >
-            {pieData.map((entry, index) => (
-              <Cell
-                key={index}
-                fill={["#8884d8", "#82ca9d", "#ffc658", "#ff4d4f"][index]}
-              />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </div>
-
-      {/* Table Section */}
-      <h2 className="text-xl font-semibold mb-2">Logs</h2>
-      <table className="table-auto border w-full">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-2">Time</th>
-            <th className="border px-2">Event</th>
-            <th className="border px-2">IP</th>
-            <th className="border px-2">Severity</th>
-            <th className="border px-2">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((log, i) => (
-            <tr key={i}>
-              <td className="border px-2">{log.timestamp}</td>
-              <td className="border px-2">{log.event_type}</td>
-              <td className="border px-2">{log.source_ip}</td>
-              <td className="border px-2">{log.severity}</td>
-              <td className="border px-2">{log.description}</td>
+      <div className="overflow-x-auto shadow-md rounded-lg">
+        <table className="min-w-full border border-gray-300">
+          <thead className="bg-gray-100 text-gray-700">
+            <tr>
+              <th className="px-4 py-2 border">ID</th>
+              <th className="px-4 py-2 border">Timestamp</th>
+              <th className="px-4 py-2 border">Event Type</th>
+              <th className="px-4 py-2 border">Source IP</th>
+              <th className="px-4 py-2 border">Severity</th>
+              <th className="px-4 py-2 border">Description</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {logs.length > 0 ? (
+              logs.map((log) => (
+                <tr key={log.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border text-center">{log.id}</td>
+                  <td className="px-4 py-2 border">
+                    {new Date(log.timestamp).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2 border">{log.event_type}</td>
+                  <td className="px-4 py-2 border">{log.source_ip}</td>
+                  <td
+                    className={`px-4 py-2 border font-semibold ${
+                      log.severity === "HIGH"
+                        ? "text-red-600"
+                        : log.severity === "MEDIUM"
+                        ? "text-yellow-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {log.severity}
+                  </td>
+                  <td className="px-4 py-2 border">{log.description}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="px-4 py-3 text-center text-gray-500 italic"
+                >
+                  No logs available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
-
-export default App;

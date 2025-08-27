@@ -6,7 +6,7 @@ function App() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    fetch("${process.env.VITE_API_URL}/api/logs/")
+    fetch(`${import.meta.env.VITE_API_URL}/api/logs/`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched logs:", data);

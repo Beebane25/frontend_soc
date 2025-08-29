@@ -1,228 +1,226 @@
-# 🛡️ Mini SOC Dashboard
+Mini SOC Dashboard — Frontend (React + Vite)
 
-**Mini SOC Dashboard** adalah aplikasi fullstack sederhana untuk monitoring event keamanan (logs/security events). Proyek ini menggunakan **Django + Django REST Framework** untuk backend API dan **React + Tailwind + Recharts** untuk frontend. Terdapat contoh cara deploy ke Railway (backend) dan Vercel (frontend).
+Frontend untuk Capstone Mini SOC Dashboard — menampilkan log keamanan dalam tabel, grafik analitik (pie & bar), search/filter, dan UI modern menggunakan TailwindCSS + komponen UI sederhana.
 
----
+🔎 Ringkasan
 
-## 🚀 Ringkasan
+Framework: React (Vite)
 
-* **Backend:** Django REST API (model `Log`, endpoints CRUD + statistik)
-* **Frontend:** React (Create React App) + Tailwind + Recharts
-* **Tujuan:** Demo Mini Security Operations Center (SOC) — menampilkan logs, statistik, dan chart interaktif
+Styling: TailwindCSS
 
----
+Charts: Recharts
 
-## ✨ Fitur
+UI: komponen lokal di src/components/ui/
 
-* Menyimpan log keamanan (event type, timestamp, source IP, severity, description)
-* Endpoint CRUD untuk logs (`/api/logs/`)
-* Endpoint statistik cepat (`/api/stats/`)
-* Dashboard: chart (pie/line) dan tabel logs
-* Contoh data dummy untuk demonstrasi
+API: konsumsi Django REST API (backend) — set alamat di env VITE_API_URL
 
----
+Deployment: Vercel (direkomendasikan) / Netlify
 
-## 🏛️ Arsitektur
+📁 Struktur Proyek (inti)
+frontend-vite/
+├─ src/
+│  ├─ components/
+│  │  ├─ ui/
+│  │  │  ├─ card.jsx
+│  │  │  ├─ badge.jsx
+│  │  │  ├─ input.jsx
+│  │  │  ├─ button.jsx
+│  │  │  ├─ table.jsx
+│  │  │  └─ avatar.jsx
+│  │  ├─ charts/
+│  │  │  ├─ SeverityPieChart.jsx
+│  │  │  └─ EventBarChart.jsx
+│  │  └─ LogsTable.jsx
+│  ├─ App.jsx
+│  ├─ main.jsx
+│  ├─ index.css
+│  └─ App.css
+├─ index.html
+├─ package.json
+├─ tailwind.config.js
+├─ vite.config.js
+└─ .env
 
-```mermaid
-flowchart LR
-  User[Browser (User)] -->|akses| Frontend[React (Vercel)]
-  Frontend -->|HTTP API| Backend[Django REST API (Railway/Gunicorn)]
-  Backend --> Database[(Postgres / SQLite)]
-```
+⚙️ Requirement / Tech Stack
 
----
+Node.js >= 18
 
-## 📁 Struktur Repo (contoh)
+npm / yarn
 
-```
-/soc_dashboard
-  /soc_backend
-    /logs
-      models.py
-      serializers.py
-      views.py
-      urls.py
-    manage.py
-    requirements.txt
-  /frontend
-    src/
-    public/
-    package.json
-  README.md
-  .gitignore
-  docs/
-    chart.png
-    table.png
-```
+Vite + React
 
----
+TailwindCSS
 
-## ⚙️ Quickstart — Backend (Lokal)
+Recharts
 
-1. Clone repo
+🚀 Install & Run (Local)
 
-```bash
-git clone https://github.com/<username>/soc_dashboard.git
-cd soc_dashboard/soc_backend
-```
+Clone repo frontend:
 
-2. Buat virtualenv & install
+git clone <your-frontend-repo>
+cd frontend-vite
 
-```bash
-python -m venv venv
-# Linux/macOS
-source venv/bin/activate
-# Windows
-# venv\Scripts\activate
-pip install -r requirements.txt
-```
 
-3. Migrasi dan buat superuser
+Install dependencies:
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-4. Menambahkan dummy data (opsional)
-
-```bash
-python manage.py shell
-# contoh singkat:
-from logs.models import Log
-Log.objects.create(event_type='LOGIN_FAIL', source_ip='192.0.2.1', severity='MEDIUM', description='Contoh')
-```
-
-5. Jalankan server
-
-```bash
-python manage.py runserver
-```
-
-API akan tersedia pada `http://127.0.0.1:8000/api/`
-
----
-
-## ⚙️ Quickstart — Frontend (Lokal)
-
-1. Buka folder frontend
-
-```bash
-cd ../frontend
 npm install
-```
+# or
+yarn
 
-2. Tambah `.env` (contoh)
 
-```
-REACT_APP_API_URL=http://127.0.0.1:8000/api
-```
+Buat file .env di root (di dev gunakan Vite prefix VITE_):
 
-3. Jalankan dev server
+VITE_API_URL=https://your-django-api.example.com/api
 
-```bash
-npm start
-```
 
-Frontend: `http://localhost:3000`
+Jalankan development server:
 
----
+npm run dev
+# or
+yarn dev
 
-## 🔌 Endpoints Penting
 
-* `GET /api/logs/` — daftar logs (list)
-* `POST /api/logs/` — buat log baru
-* `GET /api/logs/{id}/` — detail log
-* `PUT/PATCH /api/logs/{id}/` — update
-* `DELETE /api/logs/{id}/` — hapus
-* `GET /api/stats/` — hitung cepat events (login\_fail, brute\_force, port\_scan, malware)
+Buka http://localhost:5173 (default Vite) — seharusnya dashboard muncul.
 
-Contoh cURL:
+🧩 Penting — Tailwind & Vite Config
 
-```bash
-curl http://127.0.0.1:8000/api/logs/
-```
+Pastikan tailwind.config.js punya content yang benar:
 
----
+module.exports = {
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  theme: { extend: {} },
+  plugins: [],
+};
 
-## 🧱 Model Utama (`logs/models.py`)
 
-Ringkasan field `Log`:
+index.css (atau src/index.css) minimal:
 
-* `timestamp` (DateTime, auto\_now\_add)
-* `event_type` (choice, e.g. LOGIN\_FAIL, BRUTE\_FORCE, PORT\_SCAN, MALWARE)
-* `source_ip` (IP address)
-* `severity` (LOW, MEDIUM, HIGH, CRITICAL)
-* `description` (text)
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
----
 
-## 🚢 Deployment (Panduan singkat)
+Tambahkan alias @ agar import @/components/... bekerja (vite.config.js):
 
-### Backend — Railway (contoh)
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
-1. Push repo backend ke GitHub
-2. Buat project di Railway → connect repo → set command start:
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
 
-```
-gunicorn soc_backend.wsgi
-```
+🧱 Komponen UI — wajib ada
 
-3. Atur variabel environment (DATABASE\_URL, SECRET\_KEY, dll)
+Untuk menghindari build error di Vercel, pastikan folder src/components/ui/ berisi file-file berikut (contoh minimal sudah dibuat di repo):
 
-### Frontend — Vercel
+card.jsx — card wrapper with Tailwind classes
 
-1. Push repo frontend ke GitHub
-2. Import project di Vercel
-3. Set environment variable:
+badge.jsx — small badge component
 
-```
-REACT_APP_API_URL=https://<your-backend-url>/api
-```
+input.jsx — styled input
 
-4. Deploy
+button.jsx — styled button
 
----
+table.jsx — reusable table helpers (optional)
 
-## 🧪 Testing & Data Dummy
+avatar.jsx — avatar image component
 
-* Pakai `faker` atau loop script untuk menambahkan 50-100 records
-* Contoh script (Django shell) ada di folder `scripts/` (opsional)
+Jika kamu copy-paste komponen yang saya berikan sebelumnya, imports seperti:
 
----
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
-## 📸 Screenshot
 
-Simpan screenshot di `docs/chart.png` dan `docs/table.png`. README menampilkan gambar menggunakan:
+akan tersedia dan build Vercel tidak error.
 
-```markdown
-![Chart](docs/chart.png)
-![Table](docs/table.png)
-```
+📊 Komponen Charts
 
----
+Folder src/components/charts/ berisi:
 
-## 📝 Contributing
+SeverityPieChart.jsx — PieChart untuk distribusi severity (Recharts)
 
-1. Fork repo
-2. Buat branch fitur: `git checkout -b feat/nama-fitur`
-3. Commit & push
-4. Buat pull request
+EventBarChart.jsx — BarChart untuk jumlah event per type
 
----
+Contoh pemakaian di App.jsx:
 
-## 📜 License
+import SeverityPieChart from "@/components/charts/SeverityPieChart";
+import EventBarChart from "@/components/charts/EventBarChart";
 
-Lisensi: **MIT** — lihat file `LICENSE` untuk detail.
+<SeverityPieChart data={severityData} />
+<EventBarChart data={eventData} />
 
----
+✅ Scripts (package.json)
 
-## 💬 Kontak
+Pastikan package.json memiliki skrip standar:
 
-Pembuat / Maintainer: `<nama atau email>`
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview"
+}
 
----
 
-*README ini di-generate otomatis — kamu bisa minta versi ringan (English) atau versi lengkap dengan diagram SVG / screenshot yang aku buatkan.*
+Untuk deploy ke Vercel, Vercel akan menjalankan npm run build dan publish folder dist.
+
+🚀 Deploy ke Vercel (singkat)
+
+Push repo ke GitHub.
+
+Login ke Vercel → Import Project → pilih repo.
+
+Set Build Command: npm run build
+Output Directory: dist
+
+Tambahkan Environment Variable di Vercel:
+
+VITE_API_URL = https://your-django-api-url/...
+
+Deploy.
+
+Catatan: gunakan VITE_ prefix untuk Vite env. Jangan commit .env ke repo.
+
+🐞 Troubleshooting (sering muncul)
+
+Tampilan polos (Tailwind tidak aktif)
+
+Pastikan @tailwind berada di index.css dan file tersebut diimport di main.jsx/App.jsx.
+
+Pastikan tailwind.config.js content mencakup ./src/**/*.{js,jsx}.
+
+Build gagal karena module not found (@/components/ui/...)
+
+Periksa file ada di path src/components/ui/... dan vite.config.js alias @ benar.
+
+Pastikan case-sensitive filenames match imports.
+
+Charts tidak tampil / error on build
+
+Pastikan recharts terinstall: npm install recharts
+
+Create chart components in src/components/charts/ and import them properly.
+
+CORS/403 errors saat fetch API
+
+Pastikan backend mengizinkan origin frontend (CORS). Untuk testing, gunakan django-cors-headers atau set header di backend.
+
+🔐 Keamanan / Production tips
+
+Jangan letakkan API keys di frontend env (Vite env visible ke browser).
+
+Gunakan authentication & role-based access di backend (JWT/session).
+
+Rate-limit API endpoints (backend) agar frontend tidak menjadi vector DDoS.
+
+📎 Contoh .gitignore (essentials)
+node_modules
+dist
+.env
+.vscode
+.DS_Store

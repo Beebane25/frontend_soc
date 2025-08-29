@@ -1,10 +1,24 @@
-# Mini SOC Dashboard — Frontend (React + Vite)
+# 🛡️ Mini SOC Dashboard (Full Functioning Web App)
 
-**Ringkasan singkat**
+Mini SOC Dashboard adalah aplikasi berbasis web yang dirancang untuk membantu tim keamanan dalam **memantau keamanan sistem secara real-time**.  
+Proyek ini dibangun dengan **Python Django REST API** sebagai backend dan **React.js** sebagai frontend.
 
-Mini SOC Dashboard adalah sebuah aplikasi front-end yang menampilkan data log keamanan (login fail, brute force, port scan, malware, dll.) dalam bentuk tabel dan visualisasi (pie/bar chart). Bagian frontend bertanggung jawab merender UI modern (React + TailwindCSS + Recharts), berkomunikasi dengan Django REST API (backend) untuk mengambil data, dan dideploy pada platform hosting statis seperti **Vercel / Netlify**.
+---
 
-> README ini hanya menjelaskan bagian *frontend* yang akan ditempatkan di GitHub (struktur repo, cara install, env, build, deploy, dan panduan troubleshooting untuk presentasi capstone).
+## Deskripsi
+Proyek ini dibuat sebagai bagian dari **Capstone Project**, dengan tujuan:
+- Menyediakan platform monitoring sederhana seperti **SOC (Security Operation Center)** mini.
+- Memberikan visualisasi data keamanan (alert, log, aktivitas user).
+- Memberikan gambaran nyata bagaimana aplikasi **frontend ↔ backend ↔ database** saling terhubung.
+
+---
+
+## Arsitektur Sistem
+```mermaid
+flowchart LR
+  User[👤 User] --> |HTTP/HTTPS| Frontend[🌐 React.js Frontend]
+  Frontend --> |REST API| Backend[⚙️ Django REST API]
+  Backend --> |SQL Query| Database[(🗄️ PostgreSQL/MySQL)]
 
 ---
 

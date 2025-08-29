@@ -1,4 +1,4 @@
-# Mini SOC Dashboard — Frontend (GitHub README)
+# Mini SOC Dashboard — Frontend
 
 **Ringkasan singkat**
 

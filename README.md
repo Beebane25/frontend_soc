@@ -165,4 +165,4 @@ export default defineConfig({
 
 ## Hasil Pada Frontend
 
-## 🚀 [Buka Aplikasi Mini SOC Dashboard](https://frontend-soc.vercel.app/)
+🚀 [Buka Aplikasi Mini SOC Dashboard](https://frontend-soc.vercel.app/)

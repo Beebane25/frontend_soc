@@ -160,3 +160,9 @@ export default defineConfig({
 * Gunakan data dummy (fixture) di backend untuk memverifikasi tampilan.
 * Periksa responsive pada perangkat mobile/desktop.
 * Uji environment variable produksi di Vercel (pastikan API URL benar dan reachable).
+
+---
+
+## Hasil Pada Frontend
+
+[Frontend SOC Dashboard]([docs/guide.md](https://frontend-soc.vercel.app/))

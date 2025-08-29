@@ -1,4 +1,4 @@
-# Mini SOC Dashboard — Frontend
+# Mini SOC Dashboard — Frontend (React + Vite)
 
 **Ringkasan singkat**
 
